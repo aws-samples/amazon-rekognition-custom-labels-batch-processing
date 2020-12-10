@@ -1,0 +1,212 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  my_custom_cv_app
+
+  Sample SAM Template for my_custom_cv_app
+Parameters:
+  RekognitionModelProjectARN:
+    Type: String
+    Description: Amazon Rekognition Model Project ARN
+  RekognitionModelProjectVersionARN:
+    Type: String
+    Description: Amazon Rekognition Model Project Version ARN
+
+Resources:
+  SourceS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      NotificationConfiguration:
+        QueueConfigurations:
+          - Event: s3:ObjectCreated:*
+            Queue: !GetAtt SQSQueue.Arn
+            Filter: 
+              S3Key: 
+                Rules:
+                  - Name: suffix
+                    Value: .png
+
+  SQSQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      DelaySeconds: 0
+      MaximumMessageSize: 262144
+      MessageRetentionPeriod: 345600
+      ReceiveMessageWaitTimeSeconds: 0
+      VisibilityTimeout: 60
+
+  SQSQueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: "TestSID"
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+                - "s3.amazonaws.com"
+            Action:
+              - "sqs:DeleteMessage"
+              - "sqs:ReceiveMessage"
+              - "sqs:SendMessage"
+            Resource: !Sub "arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:${SQSQueue.QueueName}"
+            Condition:
+              StringEquals:
+                "aws:SourceAccount": !Ref AWS::AccountId
+      Queues:
+        - !Sub "https://sqs.${AWS::Region}.amazonaws.com/${AWS::AccountId}/${SQSQueue.QueueName}"
+
+  CustomCVStateMachine:
+    Type: AWS::Serverless::StateMachine # More info about State Machine Resource: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-statemachine.html
+    Properties:
+      DefinitionUri: statemachine/my-custom-cv-sm.asl.json
+      DefinitionSubstitutions:
+        SQSPollerFunctionArn: !GetAtt SQSPollerFunction.Arn
+        StartModelFunctionArn: !GetAtt StartModelFunction.Arn
+        StopModelFunctionArn: !GetAtt StopModelFunction.Arn
+        ToggleTriggerFunctionArn: !GetAtt ToggleTriggerFunction.Arn
+      Events:
+        HourlyPollingSchedule:
+          Type: Schedule # More info about Schedule Event Source: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-statemachine-schedule.html
+          Properties:
+            Description: Schedule to run the state machine every hour
+            Enabled: True # This schedule can be disabled by default to avoid incurring charges.
+            Schedule: "rate(1 hour)"
+      Policies: # Find out more about SAM policy templates: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-templates.html
+        - LambdaInvokePolicy:
+            FunctionName: !Ref SQSPollerFunction
+        - LambdaInvokePolicy:
+            FunctionName: !Ref StartModelFunction
+        - LambdaInvokePolicy:
+            FunctionName: !Ref StopModelFunction
+        - LambdaInvokePolicy:
+            FunctionName: !Ref ToggleTriggerFunction
+
+  SQSPollerFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Properties:
+      Description: "Lambda function to Poll SQS queue for incoming messages from S3"
+      CodeUri: functions/sqs_poller/
+      Handler: app.lambda_handler
+      Environment:
+        Variables:
+          SQS_Queue_URL: !Ref SQSQueue
+      Runtime: python3.8
+      MemorySize: 128
+      Policies:
+        - SQSPollerPolicy:
+            QueueName: !GetAtt SQSQueue.QueueName
+        - LambdaInvokePolicy:
+            FunctionName: !Ref StartModelFunction
+        - LambdaInvokePolicy:
+            FunctionName: !Ref StopModelFunction
+        
+  StartModelFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Properties:
+      Description: "Lambda function to Start the Rekognition model"
+      CodeUri: functions/start_model/
+      Handler: app.lambda_handler
+      Environment:
+        Variables:
+          rekog_model_project_version_arn: !Ref RekognitionModelProjectVersionARN
+          rekog_model_project_arn: !Ref RekognitionModelProjectARN
+      Runtime: python3.8
+      MemorySize: 128
+      Timeout: 3
+      Policies:
+        - arn:aws:iam::aws:policy/AmazonRekognitionFullAccess
+        - LambdaInvokePolicy:
+            FunctionName: !Ref ToggleTriggerFunction
+        
+  StopModelFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Properties:
+      Description: "Lambda function to Stop the Rekognition model"
+      CodeUri: functions/stop_model/
+      Handler: app.lambda_handler
+      Environment:
+        Variables:
+          rekog_model_project_version_arn: !Ref RekognitionModelProjectVersionARN
+          rekog_model_project_arn: !Ref RekognitionModelProjectARN
+      Runtime: python3.8
+      MemorySize: 128
+      Timeout: 3
+      Policies:
+        - arn:aws:iam::aws:policy/AmazonRekognitionFullAccess
+        - LambdaInvokePolicy:
+            FunctionName: !Ref ToggleTriggerFunction
+
+  ToggleTriggerFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Properties:
+      Description: "Lambda function to toggle the SQS trigger for analysis"
+      CodeUri: functions/toggle_trigger/
+      Handler: app.lambda_handler
+      Environment:
+        Variables:
+          analyze_lambda_arn: !GetAtt AnalyseImageFunction.Arn 
+      Runtime: python3.8
+      MemorySize: 128
+      Timeout: 3
+      Policies:
+        - arn:aws:iam::aws:policy/AWSLambda_FullAccess
+        - LambdaInvokePolicy:
+            FunctionName: !Ref AnalyseImageFunction
+
+  FinalS3Bucket:
+    Type: "AWS::S3::Bucket"
+
+  AnalyseImageFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Properties:
+      Description: "Lambda function to analyze Images using the Rekognition Model"
+      CodeUri: functions/analyse_image/
+      Handler: app.lambda_handler
+      Environment:
+        Variables:
+          rekognition_model_project_version_arn: !Ref RekognitionModelProjectVersionARN
+          Final_S3_Bucket_Name: !Ref FinalS3Bucket
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt SQSQueue.Arn
+            BatchSize: 1
+            Enabled: false
+      MemorySize: 128
+      Timeout: 60
+      Runtime: python3.8
+      Policies:
+        - arn:aws:iam::aws:policy/AmazonRekognitionCustomLabelsFullAccess 
+        - S3CrudPolicy:
+            BucketName: !Ref FinalS3Bucket
+        - S3CrudPolicy:
+            BucketName: !Ref SourceS3Bucket
+        - SQSPollerPolicy:
+            QueueName: !GetAtt SQSQueue.QueueName
+
+Outputs:
+  # CustomCVStateMachineHourlySchedule is an implicit Schedule event rule created out of Events key under Serverless::StateMachine
+  # Find out more about other implicit resources you can reference within SAM
+  # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-generated-resources.html
+  CustomCVStateMachineArn:
+    Description: "State machine ARN"
+    Value: !Ref CustomCVStateMachine
+  CustomCVStateMachineRoleArn:
+    Description: "IAM Role created for State machine based on the specified SAM Policy Templates"
+    Value: !GetAtt CustomCVStateMachineRole.Arn
+  SQSQueueARN:
+    Description: "SQS Queue ARN"
+    Value: !GetAtt SQSQueue.Arn
+  FinalS3BucketName:
+    Description: "Name of the final S3 bucket"
+    Value: !Ref FinalS3Bucket
+  AnalyseImageFuntion:
+    Description: "Value of the Amalyse Image Function ARN"
+    Value: !GetAtt AnalyseImageFunction.Arn 
+  AnalyseImageName:
+    Description: "Value of the Amalyse Image Function Name"
+    Value: !Ref AnalyseImageFunction
