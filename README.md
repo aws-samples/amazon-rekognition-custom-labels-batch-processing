@@ -1,16 +1,18 @@
-# serverless_computer_vision_pipeline
+# serverless-computer-vision-label-detection 
 
-This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI. It includes the following files and folders:
+This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI. The application can be used for Computer Vision inferencing using Amazon Rekognition or Amazon Lookout for Vision. It includes the following files and folders:
 
-- functions - Code for the application's Lambda functions to check the presence of messages in a Queue, start or stop a Amazon Rekognition Custom Label Model, Amalyse Images using a Custom Label Model.
-- statemachines - Definition for the state machine that orchestrates the workflow.
+- functions - Code for the application's Lambda functions to check the presence of messages in a Queue, start or stop a Amazon Rekognition Custom Label Model, Analyse Images using a Custom Label Model.
+- statemachine - Definition for the state machine that orchestrates the workflow and acts as the control plane.
 - template.yaml - A template that defines the application's AWS resources.
 
-This application creates a Amazon Rekognition Custom Label Detection workflow which runs on a pre-defined schedule (note that the schedule is disabled by default to avoid incurring charges). It demonstrates the power of Step Functions to orchestrate Lambda functions and other AWS resources to form complex and robust workflows, coupled with event-driven development using Amazon EventBridge.
+This application creates a serverless Amazon Rekognition Custom Label Detection workflow which runs on a pre-defined schedule (note that the schedule is disabled by default at deployment to avoid incurring charges). It demonstrates the power of Step Functions to orchestrate Lambda functions and other AWS resources to form complex and robust workflows, coupled with event-driven development using Amazon EventBridge.
 
-AWS Step Functions lets you coordinate multiple AWS services into serverless workflows so you can build and update apps quickly. Using Step Functions, you can design and run workflows that stitch together services, such as AWS Lambda, AWS Fargate, and Amazon SageMaker, into feature-rich applications.
+This application can also be used for creating a serverless image label inferencing pipeline for Amazon Lookout for Vision.
 
-The application uses several AWS resources, including Step Functions state machines, Lambda functions and an EventBridge rule trigger. These resources are defined in the `template.yaml` file in this project. You can update the template to add AWS resources through the same deployment process that updates your application code.
+The application uses several AWS resources, including Amazon Simple Storage Service, Amazon Simple Queue Service, Step Functions state machines, Lambda functions and an EventBridge rule trigger. These resources are defined in the `template.yaml` file in this project. You can update the template to add AWS resources through the same deployment process that updates your application code.
+
+Please note that this code is provided as a working sample. However, if you intend to use it in production, it is recommended that you implement production best practices including but not limited to error handling etc. 
 
 If you prefer to use an integrated development environment (IDE) to build and test the Lambda functions within your application, you can use the AWS Toolkit. The AWS Toolkit is an open source plug-in for popular IDEs that uses the SAM CLI to build and deploy serverless applications on AWS. The AWS Toolkit also adds a simplified step-through debugging experience for Lambda function code. See the following links to get started:
 
@@ -45,12 +47,16 @@ The first command will build the source of your application. The second command 
 * **Allow SAM CLI IAM role creation**: Many AWS SAM templates, including this example, create AWS IAM roles required for the AWS Lambda function(s) included to access AWS services. By default, these are scoped down to minimum required permissions. To deploy an AWS CloudFormation stack which creates or modified IAM roles, the `CAPABILITY_IAM` value for `capabilities` must be provided. If permission isn't provided through this prompt, to deploy this example you must explicitly pass `--capabilities CAPABILITY_IAM` to the `sam deploy` command.
 * **Save arguments to samconfig.toml**: If set to yes, your choices will be saved to a configuration file inside the project, so that in the future you can just re-run `sam deploy` without parameters to deploy changes to your application.
 
+When deployoing this application you will need to provide the following two parameters for your Custom Label Project.
+1. Amazon Rekognition Model Project ARN
+2. Amazon Rekognition Model Project Version ARN
+
 ## Use the SAM CLI to build locally
 
 Build the Lambda functions in your application with the `sam build --use-container` command.
 
 ```bash
-my_custom_cv_app$ sam build 
+sam build 
 ```
 
 The SAM CLI installs dependencies defined in `functions/*/requirements.txt`, creates a deployment package, and saves it in the `.aws-sam/build` folder.
@@ -64,7 +70,7 @@ The application template uses AWS Serverless Application Model (AWS SAM) to defi
 To delete the sample application that you created, use the AWS CLI. Assuming you used your project name for the stack name, you can run the following:
 
 ```bash
-aws cloudformation delete-stack --stack-name my_custom_cv_app
+aws cloudformation delete-stack --stack-name <<stack_name>>
 ```
 
 ## Resources
