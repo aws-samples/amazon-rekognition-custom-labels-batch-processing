@@ -12,7 +12,7 @@ This application can also be used for creating a serverless image label inferenc
 
 The application uses several AWS resources, including Amazon Simple Storage Service, Amazon Simple Queue Service, Step Functions state machines, Lambda functions and an EventBridge rule trigger. These resources are defined in the `template.yaml` file in this project. You can update the template to add AWS resources through the same deployment process that updates your application code.
 
-Please note that this code is provided as a working sample. However, if you intend to use it in production, it is recommended that you implement production best practices including but not limited to error handling etc. 
+Please note that this code is provided as a working sample. However, if you intend to use it in production, it is recommended that you implement production best practices including but not limited to error handling, message visibility settings, timeouts, storage lifecycle rules etc. 
 
 If you prefer to use an integrated development environment (IDE) to build and test the Lambda functions within your application, you can use the AWS Toolkit. The AWS Toolkit is an open source plug-in for popular IDEs that uses the SAM CLI to build and deploy serverless applications on AWS. The AWS Toolkit also adds a simplified step-through debugging experience for Lambda function code. See the following links to get started:
 
