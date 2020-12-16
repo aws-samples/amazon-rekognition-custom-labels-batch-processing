@@ -19,5 +19,5 @@ When deployoing this application you will need to provide the following two para
 2. Amazon Rekognition Model Project Version ARN
 
 ## License
-
+     
 This library is licensed under the MIT-0 License. See the LICENSE file.
