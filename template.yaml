@@ -117,7 +117,12 @@ Resources:
       MemorySize: 128
       Timeout: 3
       Policies:
-        - arn:aws:iam::aws:policy/AmazonRekognitionFullAccess
+        - Statement:
+          - Action:
+              - "rekognition:StartProjectVersion"
+            Effect: "Allow"
+            Resource: 
+              - !Ref RekognitionModelProjectVersionARN
         - LambdaInvokePolicy:
             FunctionName: !Ref ToggleTriggerFunction
         
@@ -135,7 +140,12 @@ Resources:
       MemorySize: 128
       Timeout: 3
       Policies:
-        - arn:aws:iam::aws:policy/AmazonRekognitionFullAccess
+        - Statement:
+          - Action:
+              - "rekognition:StopProjectVersion"
+            Effect: "Allow"
+            Resource: 
+              - !Ref RekognitionModelProjectVersionARN
         - LambdaInvokePolicy:
             FunctionName: !Ref ToggleTriggerFunction
 
@@ -152,9 +162,13 @@ Resources:
       MemorySize: 128
       Timeout: 3
       Policies:
-        - arn:aws:iam::aws:policy/AWSLambda_FullAccess
-        - LambdaInvokePolicy:
-            FunctionName: !Ref AnalyseImageFunction
+        - Statement:
+          - Action:
+              - "lambda:ListEventSourceMappings"
+              - "lambda:GetEventSourceMapping"
+              - "lambda:UpdateEventSourceMapping"
+            Effect: "Allow"
+            Resource: "*"
 
   FinalS3Bucket:
     Type: "AWS::S3::Bucket"
@@ -180,7 +194,12 @@ Resources:
       Timeout: 60
       Runtime: python3.8
       Policies:
-        - arn:aws:iam::aws:policy/AmazonRekognitionCustomLabelsFullAccess 
+        - Statement:
+          - Action:
+              - "rekognition:DetectCustomLabels"
+            Effect: "Allow"
+            Resource: 
+              - !Ref RekognitionModelProjectARN
         - S3CrudPolicy:
             BucketName: !Ref FinalS3Bucket
         - S3CrudPolicy:
