@@ -119,6 +119,7 @@ Resources:
       Policies:
         - Statement:
           - Action:
+              - "rekognition:DescribeProjectVersions"
               - "rekognition:StartProjectVersion"
             Effect: "Allow"
             Resource: 
@@ -142,6 +143,7 @@ Resources:
       Policies:
         - Statement:
           - Action:
+              - "rekognition:DescribeProjectVersions"
               - "rekognition:StopProjectVersion"
             Effect: "Allow"
             Resource: 
