@@ -123,6 +123,7 @@ Resources:
               - "rekognition:StartProjectVersion"
             Effect: "Allow"
             Resource: 
+              - !Ref RekognitionModelProjectARN
               - !Ref RekognitionModelProjectVersionARN
         - LambdaInvokePolicy:
             FunctionName: !Ref ToggleTriggerFunction
@@ -147,6 +148,7 @@ Resources:
               - "rekognition:StopProjectVersion"
             Effect: "Allow"
             Resource: 
+              - !Ref RekognitionModelProjectARN
               - !Ref RekognitionModelProjectVersionARN
         - LambdaInvokePolicy:
             FunctionName: !Ref ToggleTriggerFunction
@@ -202,6 +204,7 @@ Resources:
             Effect: "Allow"
             Resource: 
               - !Ref RekognitionModelProjectARN
+              - !Ref RekognitionModelProjectVersionARN
         - S3CrudPolicy:
             BucketName: !Ref FinalS3Bucket
         - S3CrudPolicy:
