@@ -1,9 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: >
-  my_custom_cv_app
-
-  Sample SAM Template for my_custom_cv_app
+Description: Serverless Computer Vision Label Detection (uksb-1reh3a0p6)
 Parameters:
   RekognitionModelProjectARN:
     Type: String
@@ -11,6 +8,11 @@ Parameters:
   RekognitionModelProjectVersionARN:
     Type: String
     Description: Amazon Rekognition Model Project Version ARN
+
+Mappings:
+  Solution:
+    Constants:
+      Version: 'v0.1'
 
 Resources:
   SourceS3Bucket:

@@ -1,3 +1,4 @@
 .aws-sam
 .DS_Store
+packaged.zip
 samconfig.toml
