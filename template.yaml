@@ -12,6 +12,11 @@ Parameters:
     Type: String
     Description: Amazon Rekognition Model Project Version ARN
 
+Mappings:
+  Solution:
+    Constants:
+      Version: 'v0.1'
+
 Resources:
   SourceS3Bucket:
     Type: AWS::S3::Bucket
