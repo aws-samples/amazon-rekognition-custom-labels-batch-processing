@@ -5,6 +5,7 @@ package:
 		functions \
 		cfn-publish.config \
 		statemachine \
+		template.yaml \
 		-x '**/__pycache*' @
 
 version:
