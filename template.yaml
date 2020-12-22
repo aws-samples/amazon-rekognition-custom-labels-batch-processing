@@ -61,68 +61,51 @@ Resources:
         - !Sub "https://sqs.${AWS::Region}.amazonaws.com/${AWS::AccountId}/${SQSQueue.QueueName}"
 
   CustomCVStateMachine:
-    Type: AWS::StepFunctions::StateMachine
+    Type: AWS::Serverless::StateMachine
     Properties:
-      DefinitionString: !Sub |-
-        {
-          "StartAt": "Check Queue",
-          "States": {
-              "Check Queue": {
-                  "Type": "Task",
-                  "Resource": "${SQSPollerFunction.Arn}",
-                  "ResultPath": "$.messageinqueue",
-                  "Next": "Choice State"
-              },
-              "Choice State": {
-                "Type": "Choice",
-                "Choices": [
-                  {
-                    "Variable": "$.messageinqueue",
-                    "StringEquals": "incoming",
-                    "Next": "Start Model"
-                  }           
-                ],
-                "Default": "Disable SQS Trigger"
-              },
-              "Start Model": {
-                  "Type": "Task",
-                  "Resource": "${StartModelFunction.Arn}",
-                  "ResultPath": "$.runningstatus",
-                  "Next": "Start States"
-              },
-              "Start States": {
-                "Type": "Choice",
-                "Choices": [
-                  {
-                    "Variable": "$.runningstatus",
-                    "StringEquals": "RUNNING",
-                    "Next": "Enable SQS Trigger"
-                  }
-                ],
-                "Default": "Wait for Model to start"
-              },      
-              "Wait for Model to start": {
-                  "Type": "Wait",
-                  "Seconds": 600,
-                  "Next": "Enable SQS Trigger"
-              },
-              "Enable SQS Trigger": {
-                  "Type": "Task",
-                  "Resource": "${ToggleTriggerFunction.Arn}",
-                  "Next": "Check Queue"
-              },
-              "Disable SQS Trigger": {
-                  "Type": "Task",
-                  "Resource": "${ToggleTriggerFunction.Arn}",
-                  "Next": "Stop Model"
-              },
-            "Stop Model": {
-                  "Type": "Task",
-                  "Resource": "${StopModelFunction.Arn}",
-                  "End": true
-            }
-          }
-        }
+      Definition:
+        StartAt: Check Queue
+        States:
+          Check Queue:
+            Type: Task
+            Resource: !GetAtt SQSPollerFunction.Arn
+            ResultPath: "$.messageinqueue"
+            Next: Choice State
+          Choice State:
+            Type: Choice
+            Choices:
+            - Variable: "$.messageinqueue"
+              StringEquals: incoming
+              Next: Start Model
+            Default: Disable SQS Trigger
+          Start Model:
+            Type: Task
+            Resource: !GetAtt StartModelFunction.Arn
+            ResultPath: "$.runningstatus"
+            Next: Start States
+          Start States:
+            Type: Choice
+            Choices:
+            - Variable: "$.runningstatus"
+              StringEquals: RUNNING
+              Next: Enable SQS Trigger
+            Default: Wait for Model to start
+          Wait for Model to start:
+            Type: Wait
+            Seconds: 600
+            Next: Enable SQS Trigger
+          Enable SQS Trigger:
+            Type: Task
+            Resource: !GetAtt ToggleTriggerFunction.Arn
+            Next: Check Queue
+          Disable SQS Trigger:
+            Type: Task
+            Resource: !GetAtt ToggleTriggerFunction.Arn
+            Next: Stop Model
+          Stop Model:
+            Type: Task
+            Resource: !GetAtt StopModelFunction.Arn
+            End: true
       Events:
         HourlyPollingSchedule:
           Type: Schedule # More info about Schedule Event Source: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-statemachine-schedule.html
