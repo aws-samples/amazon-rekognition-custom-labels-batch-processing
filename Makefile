@@ -4,7 +4,6 @@ package:
 	zip -r packaged.zip \
 		functions \
 		cfn-publish.config \
-		statemachine \
 		template.yaml \
 		-x '**/__pycache*' @
 

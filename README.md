@@ -3,7 +3,6 @@
 This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI. The application can be used for Computer Vision inferencing using Amazon Rekognition or Amazon Lookout for Vision. It includes the following files and folders:
 
 - functions - Code for the application's Lambda functions to check the presence of messages in a Queue, start or stop a Amazon Rekognition Custom Label Model, Analyse Images using a Custom Label Model.
-- statemachine - Definition for the state machine that orchestrates the workflow and acts as the control plane.
 - template.yaml - A template that defines the application's AWS resources.
 
 This application creates a serverless Amazon Rekognition Custom Label Detection workflow which runs on a pre-defined schedule (note that the schedule is disabled by default at deployment to avoid incurring charges). It demonstrates the power of Step Functions to orchestrate Lambda functions and other AWS resources to form complex and robust workflows, coupled with event-driven development using Amazon EventBridge.
