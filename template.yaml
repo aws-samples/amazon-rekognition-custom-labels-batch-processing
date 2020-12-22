@@ -61,9 +61,9 @@ Resources:
         - !Sub "https://sqs.${AWS::Region}.amazonaws.com/${AWS::AccountId}/${SQSQueue.QueueName}"
 
   CustomCVStateMachine:
-    Type: AWS::Serverless::StateMachine # More info about State Machine Resource: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-statemachine.html
+    Type: AWS::StepFunctions::StateMachine # More info about State Machine Resource: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-statemachine.html
     Properties:
-      DefinitionUri: statemachine/my-custom-cv-sm.asl.json
+      DefinitionS3Location: statemachine/my-custom-cv-sm.asl.json
       DefinitionSubstitutions:
         SQSPollerFunctionArn: !GetAtt SQSPollerFunction.Arn
         StartModelFunctionArn: !GetAtt StartModelFunction.Arn
