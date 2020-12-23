@@ -27,10 +27,12 @@ def lambda_handler(event, context):
     projectversionarn = os.environ['rekog_model_project_version_arn']
     projectarn = os.environ['rekog_model_project_arn']
     running_states = ['STARTING', 'RUNNING']
+    projectversionname = projectversionarn.split("/")[3]
     # Check if already running
     # Call Custom Rekog
     isrunning_response = rekog_client.describe_project_versions(
-        ProjectArn=projectarn
+        ProjectArn=projectarn,
+        VersionNames=[projectversionname]
         )
     running_status = isrunning_response['ProjectVersionDescriptions'][0]['Status']
     if running_status in running_states:
