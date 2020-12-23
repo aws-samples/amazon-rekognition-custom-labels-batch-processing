@@ -255,21 +255,15 @@ Outputs:
   # CustomCVStateMachineHourlySchedule is an implicit Schedule event rule created out of Events key under Serverless::StateMachine
   # Find out more about other implicit resources you can reference within SAM
   # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-generated-resources.html
-  CustomCVStateMachineArn:
-    Description: "State machine ARN"
-    Value: !Ref CustomCVStateMachine
-  CustomCVStateMachineRoleArn:
-    Description: "IAM Role created for State machine based on the specified SAM Policy Templates"
-    Value: !GetAtt CustomCVStateMachineRole.Arn
-  SQSQueueARN:
-    Description: "SQS Queue ARN"
-    Value: !GetAtt SQSQueue.Arn
+  SourceS3BucketName:
+    Description: "Name of the S3 bucket to hold the incoming images"
+    Value: !Ref SourceS3Bucket
   FinalS3BucketName:
-    Description: "Name of the final S3 bucket"
+    Description: "Name of the final S3 bucket to hold the image and the inference json"
     Value: !Ref FinalS3Bucket
-  AnalyseImageFuntion:
-    Description: "Value of the Amalyse Image Function ARN"
+  AnalyseImageFuntionARN:
+    Description: "Value of the Analyse Image Function ARN"
     Value: !GetAtt AnalyseImageFunction.Arn 
-  AnalyseImageName:
-    Description: "Value of the Amalyse Image Function Name"
-    Value: !Ref AnalyseImageFunction
+  CustomCVStateMachineARN:
+    Description: "ARN of the Step Function"
+    Value: !Ref CustomCVStateMachine
