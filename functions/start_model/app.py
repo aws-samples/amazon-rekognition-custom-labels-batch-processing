@@ -29,19 +29,32 @@ def lambda_handler(event, context):
     projectversionname = projectversionarn.split("/")[3]
     # Check if already running
     # Call Custom Rekog
-    isrunning_response = rekog_client.describe_project_versions(
-        ProjectArn=projectarn,
-        VersionNames=[projectversionname]
+    try:
+        isrunning_response = rekog_client.describe_project_versions(
+            ProjectArn=projectarn,
+            VersionNames=[projectversionname]
         )
+    except Exception as e:
+        print(e)
+        
     running_status = isrunning_response['ProjectVersionDescriptions'][0]['Status']
     if running_status in running_states:
         # Do nothing
         print('Model Start Status: %s' % running_status)
     else:
         # If not running - Start
-        running_status = rekog_client.start_project_version(
-            ProjectVersionArn=projectversionarn,                
-            MinInferenceUnits=1 #Can be increased upto 5 for running multiple inference units
+        try:
+            running_status = rekog_client.start_project_version(
+                ProjectVersionArn=projectversionarn,                
+                MinInferenceUnits=1 #Can be increased upto 5 for running multiple inference units
             )
-        print('Model Start Status: %s' % running_status)
+            # project_version_running_waiter = rekog_client.get_waiter('project_version_running')
+            # project_version_running_waiter.wait(ProjectArn=projectarn, VersionNames=[projectversionname])
+            # nowrunning_response = rekog_client.describe_project_versions(
+            #     ProjectArn=projectarn,
+            #     VersionNames=[projectversionname]
+            # )
+        except Exception as e:
+            print(e)
+        
     return running_status

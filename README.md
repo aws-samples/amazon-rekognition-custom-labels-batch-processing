@@ -5,7 +5,7 @@ This project contains source code and supporting files for a serverless applicat
 - functions - Code for the application's Lambda functions to check the presence of messages in a Queue, start or stop a Amazon Rekognition Custom Label Model, Analyse Images using a Custom Label Model.
 - template.yaml - A template that defines the application's AWS resources.
 
-This application creates a serverless Amazon Rekognition Custom Label Detection workflow which runs on a pre-defined schedule (note that the schedule is disabled by default at deployment to avoid incurring charges). It demonstrates the power of Step Functions to orchestrate Lambda functions and other AWS resources to form complex and robust workflows, coupled with event-driven development using Amazon EventBridge.
+This application creates a serverless Amazon Rekognition Custom Label Detection workflow which runs on a pre-defined schedule (note that the schedule is enabled by default at deployment). It demonstrates the power of Step Functions to orchestrate Lambda functions and other AWS resources to form complex and robust workflows, coupled with event-driven development using Amazon EventBridge.
 
 Solution Architecture Diagram:
 <img width="814" alt="image" src="https://user-images.githubusercontent.com/34427009/102906604-c5c34e80-446c-11eb-918e-42dabbcacc93.png">
@@ -77,7 +77,7 @@ The demo application is deployed as an [AWS CloudFormation](https://aws.amazon.c
 #### Accessing the Application
 
 After deployment, the application can be used by configuring the following services.
-1. The event that triggers the step Machine is defaulted to run every hour and is set to "Disabled" at the start. This event can be modified and set to "Enabled" to trigger automatically. The default hourly run schedule can also be modified as per use case. When changing the run schedule, a key point to bear in mind will be to check the pricing for Amazon Rekognition Custom Labels - which is currently priced per hour.
+1. The event that triggers the step Machine is defaulted to run every hour and is set to "Enabled" at the start. This event can be modified and set to "Disabled" if the use case does not need to trigger the step machine automatically. The default hourly run schedule can also be modified as per use case. When modifying the run schedule, a key point to bear in mind will be to check the pricing for Amazon Rekognition Custom Labels - which is currently priced per hour.
 2. The Source S3 bucket should be used as the destination bucket for all the images to be used for inferencing. 
 3. The Final S3 bucket holds the images that have been processed along with the inferenced custom label jsons.
 

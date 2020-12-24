@@ -24,29 +24,45 @@ import os
 def lambda_handler(event, context):
     
     lambda_client = boto3.client('lambda')
-    
-    uuid_response = lambda_client.list_event_source_mappings(
-        FunctionName = os.environ['analyze_lambda_arn']
-        )
-    
+    try:
+        uuid_response = lambda_client.list_event_source_mappings(
+            FunctionName = os.environ['analyze_lambda_arn']
+            )
+    except Exception as e:
+            print(e)
+
     mylist = uuid_response['EventSourceMappings']
     uuiddata = mylist[0]['UUID']
     analyse_lambda_uuid = uuiddata
-    response = lambda_client.get_event_source_mapping(
-        UUID = analyse_lambda_uuid
-        )
+
+    try:
+        response = lambda_client.get_event_source_mapping(
+            UUID = analyse_lambda_uuid
+            )
+    except Exception as e:
+            print(e)
+
     # State (string) -- The state of the event source mapping. It can be one of the following: Creating , Enabling , Enabled , Disabling , Disabled , Updating , or Deleting .
     running_states = ["Enabling", "Enabled"]
     if response['State'] in running_states:
         # Disable
-        response = lambda_client.update_event_source_mapping(
-           UUID = analyse_lambda_uuid,
-            Enabled = False
-        )
+        try:
+            response = lambda_client.update_event_source_mapping(
+            UUID = analyse_lambda_uuid,
+                Enabled = False
+            )
+        except Exception as e:
+            print(e)
     else:
         # Enable
-        response = lambda_client.update_event_source_mapping(
-            UUID = analyse_lambda_uuid,
-            Enabled = True
-        )
+        try:
+            response = lambda_client.update_event_source_mapping(
+                UUID = analyse_lambda_uuid,
+                Enabled = True
+            )
+        except Exception as e:
+            print(e)
+
     return response['State']
+    # return {'status': '200'}
+

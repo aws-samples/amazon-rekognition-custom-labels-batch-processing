@@ -111,7 +111,7 @@ Resources:
           Type: Schedule # More info about Schedule Event Source: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-statemachine-schedule.html
           Properties:
             Description: Schedule to run the state machine every hour
-            Enabled: False # This schedule can be disabled by default to avoid incurring charges.
+            Enabled: True # This schedule can be disabled based on the use case to avoid incurring charges.
             Schedule: "rate(1 hour)"
       Policies: # Find out more about SAM policy templates: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-templates.html
         - LambdaInvokePolicy:

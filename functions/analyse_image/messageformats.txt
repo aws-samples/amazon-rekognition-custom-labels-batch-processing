@@ -1,0 +1,109 @@
+
+msg_payload:  {'Records': [{'eventVersion': '2.1', 'eventSource': 'aws:s3', 'awsRegion': 'us-east-1', 'eventTime': '2020-12-24T01:38:09.177Z', 'eventName': 'ObjectCreated:Put', 'userIdentity': {'principalId': 'AWS:AROA4VCA4ALVF4U6VUISX:rrahsri-Isengard'}, 'requestParameters': {'sourceIPAddress': '86.3.161.154'}, 'responseElements': {'x-amz-request-id': 'B566A449E7E0C55C', 'x-amz-id-2': 'hAzxb0FlQvN6DUv3M53XaeSIZC2nFnmFePD4BDc6pTYHaxkOuR920l8PahKLIyInLq0pbdVpOyws8xjCTqr22yc6qDfj/eqz'}, 's3': {'s3SchemaVersion': '1.0', 'configurationId': 'c11f7ec2-27d3-4e24-a47e-d23a268e464b', 'bucket': {'name': 'serverless-cv-custom-label-detecti-sources3bucket-831ongtw0at0', 'ownerIdentity': {'principalId': 'A15PPX6WRZQDJU'}, 'arn': 'arn:aws:s3:::serverless-cv-custom-label-detecti-sources3bucket-831ongtw0at0'}, 'object': {'key': 'Screenshot+2020-11-17+at+22.27.01.png', 'size': 241069, 'eTag': 'ea66b44b23d0a49068a48d09a276ca00', 'sequencer': '005FE3F1017ABEE7D9'}}}]}
+
+
+msg_payload:  {'Service': 'Amazon S3', 'Event': 's3:TestEvent', 'Time': '2020-12-24T01:34:03.091Z', 'Bucket': 'serverless-cv-custom-label-detecti-sources3bucket-831ongtw0at0', 'RequestId': 'A9EE9D353383BB4F', 'HostId': 'XbCl4x66Sl0HsvF2niKw0wYnJM0h3Dr3cCDJymGgA+47FgrDdiVPAbmVTArrkgPlsxkcRQQ4J0k='}
+Invalid msg:  {'messageId': 'ad10228d-6845-4f1c-88b5-b20d4c585486', 'receiptHandle': 'AQEByeVAnChC2DFc3WO8Vb6lNWMtqzYSQHCS23Sw7z9aOAn8dH/1xp6LjVb3hOGAKY3Jj883SKRX3I/lEWXWzgdLCFiLT6a0gCgxlZBA0EjHxzFcbR7meRKaOPA/HFJGTF7c5V+C/UAUts1LnUIb7jEO0ueEvFY7VUsylGqIqImx0xGgRH4RQPpGBw74lR3l0odsylxxUCDZ6PRSbNRtsy7afTj46Yr3qOz1jtSye1Tc5KbAsSuKVEQ+CvysoSMH/tGf8jrQ6hbIxHR+lLU98t97OJAJwYqAx7f+vOWcwbIcAHW7r+hmukJoYvW4P4IQV7U0N3xQnzu+yBHn+jWoPWsQ19lOY+IoQ0qxFoiaKAqO7HVoOECe1NmzHnVxnBrWzYH5R9PMrYKsIofFjmxPgad5WRJYzPOaaApUseCPepQiXHlFf/Hb5HG0MjvK2OEM0Gev', 'body': '{"Service":"Amazon S3","Event":"s3:TestEvent","Time":"2020-12-24T01:34:03.091Z","Bucket":"serverless-cv-custom-label-detecti-sources3bucket-831ongtw0at0","RequestId":"A9EE9D353383BB4F","HostId":"XbCl4x66Sl0HsvF2niKw0wYnJM0h3Dr3cCDJymGgA+47FgrDdiVPAbmVTArrkgPlsxkcRQQ4J0k="}', 'attributes': {'ApproximateReceiveCount': '1', 'SentTimestamp': '1608773643232', 'SenderId': 'AIDAJHIPRHEMV73VRJEBU', 'ApproximateFirstReceiveTimestamp': '1608773928805'}, 'messageAttributes': {}, 'md5OfBody': 'bd9f6cb5f52402842920f5cc4a37d49a', 'eventSource': 'aws:sqs', 'eventSourceARN': 'arn:aws:sqs:us-east-1:869866930922:serverless-cv-custom-label-detection-SQSQueue-Q6PMWXD8G3TS', 'awsRegion': 'us-east-1'}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+================================
+Invalid msg: %s {'messageId': 'f9e5b3a5-1adc-446d-ac9d-b2821853841d', 
+'receiptHandle': 'AQEB02SbhgUpnWLlxvrYZ/zURrDHcjFLVhFa3a+KmyyQRMWgdlJqNqa7zmLLUmAupLfQKyPE8lwaEgbw+QvAELpm6NR7stnNP5jBgcb9HEs+4VWDkbfSIV71pfwBY6T8FwQ6194OHz7CsgvOGcrCFc76XH9gIbVHq6qJIhTh2CjL6KCFVhNQXOPh0O51+hhlX3ZCK4J1GsDonvAwlIDYZh1zI+N1HdzbltAjTTjZcK/JwjqoLp3nu7vvXdrACMuHD7CfcXd4jPQbieRrbf1rGe6teYtQ0EVntnMxXqijZ8uXuUNye7rxGebbtyHBvlQUp62HeQcM2zI/O5e8smBY5i3q0n5OWXQFUn3XkwzMsDAAcQjgkcr2xpKQ1OXe1xr1S0ASyvbqSFJOH8Dm+7jLCkVg3KPN0k+FQawpHYQ5q2VCAlJK+tdL5aPGxDB4gxvQ0wC/', 
+'body': '{
+    "Service":"Amazon S3",
+    "Event":"s3:TestEvent",
+    "Time":"2020-12-23T12:20:08.265Z",
+    "Bucket":"serverless-cv-custom-label-detecti-sources3bucket-xp4y8o6608q",
+    "RequestId":"64F279B99DCAC18F",
+    "HostId":"r+aRevq/Y9iVi8syij7/gD7aONVW1N7j5EQSGfkXg/UCK9/IqRKkiBetaIUuA4hDMX+BkILRrUE="}', 
+    'attributes': {
+        'ApproximateReceiveCount': '1', 
+        'SentTimestamp': '1608726008297', 
+        'SenderId': 'AIDAJHIPRHEMV73VRJEBU', 
+        'ApproximateFirstReceiveTimestamp': '1608727778667'
+        }, 
+    'messageAttributes': {}, 
+    'md5OfBody': 'c0c91d6ae46c96d8736cd78f9fe63468', 
+    'eventSource': 'aws:sqs', 
+    'eventSourceARN': 'arn:aws:sqs:us-east-1:869866930922:serverless-cv-custom-label-detection-SQSQueue-4BEXLXR1EUYT', 
+    'awsRegion': 'us-east-1'}
+
+
+Invalid msg: %s {'messageId': 'd93e569c-d685-4aa3-a07b-2321bca69096', 
+'receiptHandle': 'AQEBFABH1dxVoxj9NWv2oHRwMZh5b9QcjCNGj4/VVGIn+HMt2h7MtVmbbFRuwzo0h3nt4HtwgB8kpb0sl2GiyEyyR23k152o6KuNr3R0DZUTtVxu1+LbjEDZgbSiAMm69WrnluCqHGtae1c70PhPIeEIJ15qHjDwpSiyYOKdAkpJ9BgE5Cu9Xb+9lTcjrZItcicft0nWJNZt4vofwJyvFpQWqelWH0veJn6c68eLOf2/S3BBMb9DYLrMXy2C8LQZMm60zrAAUQM10guXFc76FEMOewS2eJtZ652+UQZ1+6kCAUMz3XzrtcK55Gfjzsj0VsRxI0C4KlDTFKAKsaUbNZ7JDmYt6NkuP5xXwMm/8Llcpl5EB+6SPAnt5qHhx1QFPXCc4PFIyaVkrc+V555sm8TRlblIxQ+yBnx9xBjjC8Y7VvFBU86Tu/d/X2/KSUUzLN7g', 
+'body': '{
+    "Records":[
+        {"eventVersion":"2.1",
+        "eventSource":"aws:s3",
+        "awsRegion":"us-east-1",
+        "eventTime":"2020-12-23T12:40:10.695Z",
+        "eventName":"ObjectCreated:Put",
+        "userIdentity":{"principalId":"AWS:AROA4VCA4ALVF4U6VUISX:rrahsri-Isengard"},
+        "requestParameters":{"sourceIPAddress":"86.3.161.154"},
+        "responseElements":{"x-amz-request-id":"87516D517F42EF4D","x-amz-id-2":"1+p+sKONjMO1Fz6ssXCLps0Kt3OMcaDuUrK3urJZe8B6n5i8DZOpijZ8LAbcFHTvbdUci4aHzvmd0oIZ4ZEU4jzztxyDpL6e"},
+        "s3":{
+            "s3SchemaVersion":"1.0",
+            "configurationId":"6cd66d32-2917-4a2f-8d9f-d8e004c09576",
+            "bucket":{
+                "name":"serverless-cv-custom-label-detecti-sources3bucket-xp4y8o6608q",
+                "ownerIdentity":{"principalId":"A15PPX6WRZQDJU"},
+                "arn":"arn:aws:s3:::serverless-cv-custom-label-detecti-sources3bucket-xp4y8o6608q"},
+                "object":{
+                    "key":"Screenshot+2020-11-17+at+22.27.35.png","size":140517,"eTag":"94cb6c1a8ea14e7e89a83a31e389ab8e","sequencer":"005FE33AB244FCB3BE"}}}
+        ]
+    }', 
+    'attributes': {'ApproximateReceiveCount': '1', 'SentTimestamp': '1608727219582', 'SenderId': 'AIDAJHIPRHEMV73VRJEBU', 'ApproximateFirstReceiveTimestamp': '1608727778733'}, 
+    'messageAttributes': {}, 
+    'md5OfBody': '2aa32e28afb02a89abeac032ca8bab3d', 
+    'eventSource': 'aws:sqs', 
+    'eventSourceARN': 'arn:aws:sqs:us-east-1:869866930922:serverless-cv-custom-label-detection-SQSQueue-4BEXLXR1EUYT', 
+    'awsRegion': 'us-east-1'}
+
+
+
+
+
+
+                    Invalid data2:  
+
+{'Records': [
+    {
+        'eventVersion': '2.1', 
+        'eventSource': 'aws:s3', 
+        'awsRegion': 'us-east-1', 
+        'eventTime': '2020-12-23T14:08:38.898Z', 
+        'eventName': 'ObjectCreated:Put', 
+        'userIdentity': {'principalId': 'AWS:AROA4VCA4ALVF4U6VUISX:rrahsri-Isengard'}, 
+        'requestParameters': {'sourceIPAddress': '86.3.161.154'}, 
+        'responseElements': {
+            'x-amz-request-id': '9674C4609FBB2ADB', 
+            'x-amz-id-2': 'I+TzooXAtIL8x04V3OQehielgn7QxK9JejxY05yOPoxoe9B1wa750PAbass3i2l8JBwiAOWhd+wIHAP5Cf6I2YhTk9/BMJCb'}, 
+            's3': {
+                's3SchemaVersion': '1.0', 
+                'configurationId': '3622f400-27cc-4296-bd41-f7af661e1a0f', 
+                'bucket': {
+                    'name': 'serverless-cv-custom-label-detecti-sources3bucket-mnfom9araj8z', 
+                    'ownerIdentity': {'principalId': 'A15PPX6WRZQDJU'}, 
+                    'arn': 'arn:aws:s3:::serverless-cv-custom-label-detecti-sources3bucket-mnfom9araj8z'}, 
+                    'object': {
+                        'key': 'Screenshot+2020-11-17+at+22.28.13.png', 
+                        'size': 194551, 'eTag': '445fc230a1ae36e1d0f5d318ac310f43', 
+                        'sequencer': '005FE34F690D1607F1'}}}]}
+

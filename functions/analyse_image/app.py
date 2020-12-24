@@ -20,6 +20,8 @@ import json
 import os
 import boto3
 import logging
+import string
+import random
 from botocore.exceptions import ClientError
 
 
@@ -29,39 +31,51 @@ def lambda_handler(event, context):
     #  Create Rekognition Client
     client = boto3.client('rekognition')
     model_arn = os.environ['rekognition_model_project_version_arn']
-    data2 = json.loads(event['Records'][0]['body'])
-    bucket = data2["Records"][0]["s3"]['bucket']['name']
-    image = data2["Records"][0]["s3"]["object"]["key"].replace("+", " ")
-    response = client.detect_custom_labels(
-        ProjectVersionArn = model_arn,
-        Image={
-            'S3Object': {
-                'Bucket': bucket, 
-                'Name': image}
-            },
-        MinConfidence = 70
-    )
-    print('Labels Response: %s' % response)
-    # Get the custom labels
-    labels = response['CustomLabels']
-    print('Labels: %s' % labels)
-    # write image to final bucket and delete from incoming bucket
-    s3 = boto3.resource('s3')
-    finalbucket = os.environ['Final_S3_Bucket_Name']
-    copy_source = {
-        'Bucket': bucket,
-        'Key': image
-    }
-    s3.meta.client.copy(copy_source, finalbucket, image)
 
-    # Dump json file with label data in final bucket
-    json_object = json.dumps(labels)
-    s3_client.put_object(
-        Body=str(json_object),
-        Bucket=finalbucket,
-        Key=image+'.json'
-    )
+    for msg in event["Records"]:
+        msg_payload = json.loads(msg["body"])
+        print("msg_payload: ", msg_payload)
+        if "Records" in msg_payload:
+            bucket = msg_payload["Records"][0]["s3"]["bucket"]["name"]
+            image = msg_payload["Records"][0]["s3"]["object"]["key"].replace("+", " ")
+            response = client.detect_custom_labels(
+                ProjectVersionArn = model_arn,
+                Image={
+                    'S3Object': {
+                        'Bucket': bucket, 
+                        'Name': image}
+                    },
+                MinConfidence = 70
+            )
+            # Get the custom labels
+            labels = response['CustomLabels']
+            # write image to final bucket and delete from incoming bucket
+            s3 = boto3.resource('s3')
+            finalbucket = os.environ['Final_S3_Bucket_Name']
+            copy_source = {
+                'Bucket': bucket,
+                'Key': image
+            }
+            random_letters = ''.join(random.choice(string.ascii_letters) for i in range(10))
+            put_image_name = random_letters+'-'+image
+            s3.meta.client.copy(copy_source, finalbucket, put_image_name)
 
-    # Delete file from incoming s3 ? or implement S3 Lifecycle policy?
-    
+            # Dump json file with label data in final bucket
+            json_object = json.dumps(labels)
+            s3_client.put_object(
+                Body = str(json_object),
+                Bucket = finalbucket,
+                Key = put_image_name+'.json'
+            )
+
+            # Delete file from incoming s3
+            s3_client.delete_object(
+                Bucket = bucket,
+                Key = image,
+            )
+
+        else:
+            # Invalid Message - To Be removed from Queue
+            print("Invalid msg: ", msg)
+            
     return {'status': '200'}
