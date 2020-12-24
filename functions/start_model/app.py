@@ -50,17 +50,5 @@ def lambda_handler(event, context):
             )
         except Exception as e:
             print(e)
-
-        # project_version_running_waiter = rekog_client.get_waiter('project_version_running')
-        # project_version_running_waiter.wait(ProjectArn=projectarn, VersionNames=[projectversionname])
-        
-        # try:
-        #     started_response = rekog_client.describe_project_versions(
-        #         ProjectArn=projectarn,
-        #         VersionNames=[projectversionname]
-        #     )
-        #     running_status = started_response['ProjectVersionDescriptions'][0]['Status']
-        # except Exception as e:
-        #     print(e)
         
     return running_status
