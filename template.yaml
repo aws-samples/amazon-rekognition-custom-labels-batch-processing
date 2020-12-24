@@ -89,15 +89,19 @@ Resources:
             - Variable: "$.runningstatus"
               StringEquals: RUNNING
               Next: Enable SQS Trigger
-            Default: Wait for Model to start
-          Wait for Model to start:
+            Default: Wait for the model to start
+          Wait for the model to start:
             Type: Wait
             Seconds: 600
             Next: Enable SQS Trigger
+          Keep Model running for 1 hr:
+            Type: Wait
+            Seconds: 3540
+            Next: Disable SQS Trigger
           Enable SQS Trigger:
             Type: Task
             Resource: !GetAtt ToggleTriggerFunction.Arn
-            Next: Check Queue
+            Next: Keep Model running for 1 hr
           Disable SQS Trigger:
             Type: Task
             Resource: !GetAtt ToggleTriggerFunction.Arn

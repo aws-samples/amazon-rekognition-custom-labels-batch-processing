@@ -48,13 +48,19 @@ def lambda_handler(event, context):
                 ProjectVersionArn=projectversionarn,                
                 MinInferenceUnits=1 #Can be increased upto 5 for running multiple inference units
             )
-            # project_version_running_waiter = rekog_client.get_waiter('project_version_running')
-            # project_version_running_waiter.wait(ProjectArn=projectarn, VersionNames=[projectversionname])
-            # nowrunning_response = rekog_client.describe_project_versions(
-            #     ProjectArn=projectarn,
-            #     VersionNames=[projectversionname]
-            # )
         except Exception as e:
             print(e)
+
+        # project_version_running_waiter = rekog_client.get_waiter('project_version_running')
+        # project_version_running_waiter.wait(ProjectArn=projectarn, VersionNames=[projectversionname])
+        
+        # try:
+        #     started_response = rekog_client.describe_project_versions(
+        #         ProjectArn=projectarn,
+        #         VersionNames=[projectversionname]
+        #     )
+        #     running_status = started_response['ProjectVersionDescriptions'][0]['Status']
+        # except Exception as e:
+        #     print(e)
         
     return running_status
