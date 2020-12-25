@@ -27,6 +27,13 @@ Resources:
                 Rules:
                   - Name: suffix
                     Value: .png
+          - Event: s3:ObjectCreated:*
+            Queue: !GetAtt SQSQueue.Arn
+            Filter: 
+              S3Key: 
+                Rules:
+                  - Name: suffix
+                    Value: .jpg
 
   SQSQueue:
     Type: AWS::SQS::Queue
