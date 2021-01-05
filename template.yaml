@@ -12,7 +12,7 @@ Parameters:
 Mappings:
   Solution:
     Constants:
-      Version: 'v0.2'
+      Version: 'v0.3'
 
 Resources:
   SourceS3Bucket:
@@ -107,10 +107,14 @@ Resources:
             Next: Disable SQS Trigger
           Enable SQS Trigger:
             Type: Task
+            Parameters: 
+              - Action: enable
             Resource: !GetAtt ToggleTriggerFunction.Arn
             Next: Keep Model running for 1 hr
           Disable SQS Trigger:
             Type: Task
+            Parameters: 
+              - Action: disable
             Resource: !GetAtt ToggleTriggerFunction.Arn
             Next: Stop Model
           Stop Model:
@@ -122,7 +126,7 @@ Resources:
           Type: Schedule # More info about Schedule Event Source: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-statemachine-schedule.html
           Properties:
             Description: Schedule to run the state machine every hour
-            Enabled: True # This schedule can be disabled based on the use case to avoid incurring charges.
+            Enabled: False # This schedule can be disabled based on the use case to avoid incurring charges.
             Schedule: "rate(1 hour)"
       Policies: # Find out more about SAM policy templates: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-templates.html
         - LambdaInvokePolicy:

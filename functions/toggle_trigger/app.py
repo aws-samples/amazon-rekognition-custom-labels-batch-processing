@@ -43,26 +43,28 @@ def lambda_handler(event, context):
             print(e)
 
     # State (string) -- The state of the event source mapping. It can be one of the following: Creating , Enabling , Enabled , Disabling , Disabled , Updating , or Deleting .
-    running_states = ["Enabling", "Enabled"]
+    running_states = ["Enabling", "Enabled", "Disabled", "Disabling"]
     if response['State'] in running_states:
         # Disable
-        try:
-            response = lambda_client.update_event_source_mapping(
-            UUID = analyse_lambda_uuid,
-                Enabled = False
-            )
-        except Exception as e:
-            print(e)
-    else:
-        # Enable
-        try:
-            response = lambda_client.update_event_source_mapping(
+        if (event[0]['Action'] == 'disable'): 
+            try:
+                response = lambda_client.update_event_source_mapping(
                 UUID = analyse_lambda_uuid,
-                Enabled = True
-            )
-        except Exception as e:
-            print(e)
+                    Enabled = False
+                )
+            except Exception as e:
+                print(e)
+        else:
+            # Enable
+            if (event[0]['Action'] == 'enable'): 
+                try:
+                    response = lambda_client.update_event_source_mapping(
+                        UUID = analyse_lambda_uuid,
+                        Enabled = True
+                    )
+                except Exception as e:
+                    print(e)
+    else:
+        print("Current state is:", response['State'])
 
     return response['State']
-    # return {'status': '200'}
-
