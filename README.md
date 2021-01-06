@@ -25,7 +25,7 @@ Please note that this code is provided as a working sample. However, if you inte
 #### Prerequisites
 
 1. Please refer [here](https://docs.aws.amazon.com/rekognition/latest/customlabels-dg/gs-introduction.html) for instructions on getting started with Amazon Rekognition Custom Labels. When deploying this application you will need to provide the following two parameters for your Custom Label Project.
-   - Amazon Rekognition Model Project ARN: The Amazon Resource Name (ARN) of the project that contains the models you want to use. 
+   - Amazon Rekognition Model Project ARN: The Amazon Resource Name (ARN) of the Amazon Rekognition Custom Labels project that contains the models you want to use. 
    - Amazon Rekognition Model Project Version ARN: The Amazon Resource Name(ARN) of the model version that you want to use.
 
 2. To deploy the sample application, you will require an AWS account. If you don’t already have an AWS account, create one at <https://aws.amazon.com> by following the on-screen instructions. Your access to the AWS account must have IAM permissions to launch AWS CloudFormation templates that create IAM roles.
