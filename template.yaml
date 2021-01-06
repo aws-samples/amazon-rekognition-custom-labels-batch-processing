@@ -12,7 +12,7 @@ Parameters:
 Mappings:
   Solution:
     Constants:
-      Version: 'v0.4'
+      Version: 'v0.5'
 
 Resources:
   SourceS3Bucket:
@@ -100,7 +100,7 @@ Resources:
           Wait for the model to start:
             Type: Wait
             Seconds: 600
-            Next: Enable SQS Trigger
+            Next: Start Model
           Keep Model running for 1 hr:
             Type: Wait
             Seconds: 3540
