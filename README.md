@@ -78,13 +78,13 @@ The demo application is deployed as an [AWS CloudFormation](https://aws.amazon.c
 
 After deployment, the application can be used by configuring the following services.
 1. The event that triggers the Step Machine is defaulted to run every hour and is set to "Enabled" at the start. This event can be modified and set to "Disabled" if the use case does not need to trigger the step machine automatically. The default hourly run schedule can also be modified as per use case. When modifying the run schedule, a key point to bear in mind will be to check the pricing for Amazon Rekognition Custom Labels - which is currently priced per hour. The step machine is configured to shut down the model after 1 hour by default.
-2. The Source S3 bucket should be used as the destination bucket for all the images to be used for inferencing. 
+2. The Source S3 bucket should be used as the destination bucket for all the images to be used for inferencing. As the images get processed, they will be deleted from the source bucket.
 3. The Final S3 bucket holds the images that have been processed along with the inferenced custom label jsons.
 
 
 ### Remove the application
 
-To remove the application open the AWS CloudFormation Console, click on the name of the project, right-click and select "_Delete Stack_". Your stack will take some time to be deleted. You can track its progress in the "Events" tab. When it is done, the status will change from "_DELETE_IN_PROGRESS_" to "_DELETE_COMPLETE_". It will then disappear from the list. Please note that the Amazon S3 buckets will only be deleted if they are empty.
+To remove the application open the AWS CloudFormation Console, click on the name of the project, right-click and select "_Delete Stack_". Your stack will take some time to be deleted. You can track its progress in the "Events" tab. When it is done, the status will change from "_DELETE_IN_PROGRESS_" to "_DELETE_COMPLETE_". It will then disappear from the list. Please note that the Amazon S3 buckets and their content will be retained.
 
 
 ## License
