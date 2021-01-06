@@ -12,30 +12,31 @@ Parameters:
 Mappings:
   Solution:
     Constants:
-      Version: 'v0.6'
+      Version: "v0.7"
 
 Resources:
   SourceS3Bucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       BucketEncryption:
         ServerSideEncryptionConfiguration:
-        - ServerSideEncryptionByDefault:
-            SSEAlgorithm: AES256
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
       NotificationConfiguration:
         QueueConfigurations:
           - Event: s3:ObjectCreated:*
             Queue: !GetAtt SQSQueue.Arn
-            Filter: 
-              S3Key: 
+            Filter:
+              S3Key:
                 Rules:
                   - Name: suffix
                     Value: .png
           - Event: s3:ObjectCreated:*
             Queue: !GetAtt SQSQueue.Arn
-            Filter: 
-              S3Key: 
+            Filter:
+              S3Key:
                 Rules:
                   - Name: suffix
                     Value: .jpg
@@ -86,9 +87,9 @@ Resources:
           Choice State:
             Type: Choice
             Choices:
-            - Variable: "$.messageinqueue"
-              StringEquals: incoming
-              Next: Start Model
+              - Variable: "$.messageinqueue"
+                StringEquals: incoming
+                Next: Start Model
             Default: Disable SQS Trigger
           Start Model:
             Type: Task
@@ -98,9 +99,9 @@ Resources:
           Start States:
             Type: Choice
             Choices:
-            - Variable: "$.runningstatus"
-              StringEquals: RUNNING
-              Next: Enable SQS Trigger
+              - Variable: "$.runningstatus"
+                StringEquals: RUNNING
+                Next: Enable SQS Trigger
             Default: Wait for the model to start
           Wait for the model to start:
             Type: Wait
@@ -112,13 +113,13 @@ Resources:
             Next: Disable SQS Trigger
           Enable SQS Trigger:
             Type: Task
-            Parameters: 
+            Parameters:
               - Action: enable
             Resource: !GetAtt ToggleTriggerFunction.Arn
             Next: Keep Model running for 1 hr
           Disable SQS Trigger:
             Type: Task
-            Parameters: 
+            Parameters:
               - Action: disable
             Resource: !GetAtt ToggleTriggerFunction.Arn
             Next: Stop Model
@@ -130,7 +131,7 @@ Resources:
         HourlyPollingSchedule:
           Type: Schedule # More info about Schedule Event Source: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-statemachine-schedule.html
           Properties:
-            Description: Schedule to run the state machine every hour
+            Description: Schedule to run the state machine every 2 hour
             Enabled: True # This schedule can be disabled based on the use case to avoid incurring charges.
             Schedule: "rate(2 hours)"
       Policies: # Find out more about SAM policy templates: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-templates.html
@@ -161,7 +162,7 @@ Resources:
             FunctionName: !Ref StartModelFunction
         - LambdaInvokePolicy:
             FunctionName: !Ref StopModelFunction
-        
+
   StartModelFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
     Properties:
@@ -177,16 +178,16 @@ Resources:
       Timeout: 3
       Policies:
         - Statement:
-          - Action:
-              - "rekognition:DescribeProjectVersions"
-              - "rekognition:StartProjectVersion"
-            Effect: "Allow"
-            Resource: 
-              - !Ref RekognitionModelProjectARN
-              - !Ref RekognitionModelProjectVersionARN
+            - Action:
+                - "rekognition:DescribeProjectVersions"
+                - "rekognition:StartProjectVersion"
+              Effect: "Allow"
+              Resource:
+                - !Ref RekognitionModelProjectARN
+                - !Ref RekognitionModelProjectVersionARN
         - LambdaInvokePolicy:
             FunctionName: !Ref ToggleTriggerFunction
-        
+
   StopModelFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
     Properties:
@@ -202,13 +203,13 @@ Resources:
       Timeout: 3
       Policies:
         - Statement:
-          - Action:
-              - "rekognition:DescribeProjectVersions"
-              - "rekognition:StopProjectVersion"
-            Effect: "Allow"
-            Resource: 
-              - !Ref RekognitionModelProjectARN
-              - !Ref RekognitionModelProjectVersionARN
+            - Action:
+                - "rekognition:DescribeProjectVersions"
+                - "rekognition:StopProjectVersion"
+              Effect: "Allow"
+              Resource:
+                - !Ref RekognitionModelProjectARN
+                - !Ref RekognitionModelProjectVersionARN
         - LambdaInvokePolicy:
             FunctionName: !Ref ToggleTriggerFunction
 
@@ -220,27 +221,29 @@ Resources:
       Handler: app.lambda_handler
       Environment:
         Variables:
-          analyze_lambda_arn: !GetAtt AnalyseImageFunction.Arn 
+          analyze_lambda_arn: !GetAtt AnalyseImageFunction.Arn
       Runtime: python3.8
       MemorySize: 128
       Timeout: 3
       Policies:
         - Statement:
-          - Action:
-              - "lambda:ListEventSourceMappings"
-              - "lambda:GetEventSourceMapping"
-              - "lambda:UpdateEventSourceMapping"
-            Effect: "Allow"
-            Resource: "*"
+            - Action:
+                - "lambda:ListEventSourceMappings"
+                - "lambda:GetEventSourceMapping"
+                - "lambda:UpdateEventSourceMapping"
+              Effect: "Allow"
+              Resource: "*"
+              # Resource: !GetAtt AnalyseImageFunction.Arn
 
   FinalS3Bucket:
     Type: "AWS::S3::Bucket"
     DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       BucketEncryption:
         ServerSideEncryptionConfiguration:
-        - ServerSideEncryptionByDefault:
-            SSEAlgorithm: AES256
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
 
   AnalyseImageFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
@@ -264,12 +267,12 @@ Resources:
       Runtime: python3.8
       Policies:
         - Statement:
-          - Action:
-              - "rekognition:DetectCustomLabels"
-            Effect: "Allow"
-            Resource: 
-              - !Ref RekognitionModelProjectARN
-              - !Ref RekognitionModelProjectVersionARN
+            - Action:
+                - "rekognition:DetectCustomLabels"
+              Effect: "Allow"
+              Resource:
+                - !Ref RekognitionModelProjectARN
+                - !Ref RekognitionModelProjectVersionARN
         - S3CrudPolicy:
             BucketName: !Ref FinalS3Bucket
         - S3CrudPolicy:
@@ -290,3 +293,6 @@ Outputs:
   CustomCVStateMachineARN:
     Description: "ARN of the Step Function"
     Value: !Ref CustomCVStateMachine
+  CustomCVStateMachineHourlyPollingScheduleARN:
+    Description: "ARN of the AWS EventBridge Rule"
+    Value: !Ref CustomCVStateMachineHourlyPollingSchedule
