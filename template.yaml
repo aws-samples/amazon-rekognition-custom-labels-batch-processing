@@ -12,12 +12,17 @@ Parameters:
 Mappings:
   Solution:
     Constants:
-      Version: 'v0.5'
+      Version: 'v0.6'
 
 Resources:
   SourceS3Bucket:
     Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
     Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+        - ServerSideEncryptionByDefault:
+            SSEAlgorithm: AES256
       NotificationConfiguration:
         QueueConfigurations:
           - Event: s3:ObjectCreated:*
@@ -127,7 +132,7 @@ Resources:
           Properties:
             Description: Schedule to run the state machine every hour
             Enabled: True # This schedule can be disabled based on the use case to avoid incurring charges.
-            Schedule: "rate(1 hour)"
+            Schedule: "rate(2 hours)"
       Policies: # Find out more about SAM policy templates: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-templates.html
         - LambdaInvokePolicy:
             FunctionName: !Ref SQSPollerFunction
@@ -230,6 +235,12 @@ Resources:
 
   FinalS3Bucket:
     Type: "AWS::S3::Bucket"
+    DeletionPolicy: Retain
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+        - ServerSideEncryptionByDefault:
+            SSEAlgorithm: AES256
 
   AnalyseImageFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
