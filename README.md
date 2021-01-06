@@ -39,7 +39,7 @@ The demo application is deployed as an [AWS CloudFormation](https://aws.amazon.c
 > You are responsible for the cost of the AWS services used while running this sample deployment. There is no additional cost for using this sample. For full details, see the following pricing pages for each AWS service you will be using in this sample. Prices are subject to change.
 >
 > - [Amazon Rekognition Pricing](https://aws.amazon.com/rekognition/pricing/)
-> - [Amazon Lookout for Vision Pricing] (https://aws.amazon.com/lookout-for-vision/pricing/)
+> - [Amazon Lookout for Vision Pricing](https://aws.amazon.com/lookout-for-vision/pricing/)
 > - [Amazon S3 Pricing](https://aws.amazon.com/s3/pricing/)
 > - [Amazon SQS Pricing](https://aws.amazon.com/sqs/pricing/)
 > - [AWS Lambda Pricing](https://aws.amazon.com/lambda/pricing/)
@@ -92,7 +92,7 @@ After deployment, the application can be used by configuring the following servi
 
 To remove the application open the AWS CloudFormation Console, click on the name of the project, right-click and select "_Delete Stack_". Your stack will take some time to be deleted. You can track its progress in the "Events" tab. When it is done, the status will change from "_DELETE_IN_PROGRESS_" to "_DELETE_COMPLETE_". It will then disappear from the list. 
 
-**Note:** Please note that the Amazon S3 buckets and their contents will be retained as default when removing the application via the AWS Cloudformation console. This is to ensure that no data is accidently lost while removing the application. The buckets can be deleted from the S3 console.
+**Note:** Please note that the provided configuration will ensure that the Amazon S3 buckets and their contents are retained when removing the application via the AWS Cloudformation console. This is to ensure that no data is accidently lost while removing the application. The buckets can be deleted from the S3 console.
 
 
 ## License
