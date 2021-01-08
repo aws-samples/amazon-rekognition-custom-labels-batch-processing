@@ -233,7 +233,6 @@ Resources:
                 - "lambda:UpdateEventSourceMapping"
               Effect: "Allow"
               Resource: "*"
-              # Resource: !GetAtt AnalyseImageFunction.Arn
 
   FinalS3Bucket:
     Type: "AWS::S3::Bucket"
