@@ -12,7 +12,7 @@ This project contains source code and supporting files for a serverless applicat
 This application creates a serverless Amazon Rekognition Custom Label Detection workflow which runs on a pre-defined schedule (note that the schedule is enabled by default at deployment). It demonstrates the power of Step Functions to orchestrate Lambda functions and other AWS resources to form complex and robust workflows, coupled with event-driven development using Amazon EventBridge.
 
 Solution Architecture Diagram:
-<img width="814" alt="Architecture Diagram" src="docs/Solution Architecture - Serverless Computer Vision Label Detection.png">
+<img width="814" alt="Architecture Diagram" src="docs/Solution%20Architecture%20-%20Serverless%20Computer%20Vision%20Label%20Detection.png">
 
 This application can also be used for creating a serverless image label inferencing pipeline for Amazon Lookout for Vision.
 
