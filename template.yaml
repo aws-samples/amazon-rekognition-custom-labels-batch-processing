@@ -12,7 +12,7 @@ Parameters:
 Mappings:
   Solution:
     Constants:
-      Version: "v0.7"
+      Version: "v0.8"
 
 Resources:
   SourceS3Bucket:
@@ -77,20 +77,20 @@ Resources:
     Type: AWS::Serverless::StateMachine
     Properties:
       Definition:
-        StartAt: Check Queue
+        StartAt: Check SQS Queue
         States:
-          Check Queue:
+          Check SQS Queue:
             Type: Task
             Resource: !GetAtt SQSPollerFunction.Arn
-            ResultPath: "$.messageinqueue"
-            Next: Choice State
-          Choice State:
+            ResultPath: $.messageinqueue
+            Next: Are there images to process?
+          Are there images to process?:
             Type: Choice
             Choices:
-              - Variable: "$.messageinqueue"
+              - Variable: $.messageinqueue
                 StringEquals: incoming
                 Next: Start Model
-            Default: Disable SQS Trigger
+            Default: Finish
           Start Model:
             Type: Task
             Resource: !GetAtt StartModelFunction.Arn
@@ -110,13 +110,33 @@ Resources:
           Keep Model running for 1 hr:
             Type: Wait
             Seconds: 3540
-            Next: Disable SQS Trigger
+            Next: Check Queue Again
+          Check Queue Again:
+            Type: Task
+            Resource: !GetAtt SQSPollerFunction.Arn
+            ResultPath: $.moremessagesinqueue
+            Next: Are there more images?
+          Are there more images?:
+            Type: Choice
+            Choices:
+              - Variable: $.moremessagesinqueue
+                StringEquals: stop
+                Next: Disable SQS Trigger
+            Default: Keep Model running for 1 hr
           Enable SQS Trigger:
             Type: Task
+            ResultPath: $.alreadyrunning
             Parameters:
               - Action: enable
             Resource: !GetAtt ToggleTriggerFunction.Arn
-            Next: Keep Model running for 1 hr
+            Next: Is another machine already running?
+          Is another machine already running?:
+            Type: Choice
+            Choices:
+                - Variable: $.alreadyrunning
+                  StringEquals: Already_Running
+                  Next: Finish
+            Default: Keep Model running for 1 hr
           Disable SQS Trigger:
             Type: Task
             Parameters:
@@ -126,7 +146,9 @@ Resources:
           Stop Model:
             Type: Task
             Resource: !GetAtt StopModelFunction.Arn
-            End: true
+            Next: Finish
+          Finish:
+            Type: Succeed
       Events:
         HourlyPollingSchedule:
           Type: Schedule # More info about Schedule Event Source: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-statemachine-schedule.html
