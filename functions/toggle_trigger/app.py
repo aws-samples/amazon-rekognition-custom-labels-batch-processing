@@ -43,7 +43,6 @@ def lambda_handler(event, context):
         print(e)
 
     # State (string) -- The state of the event source mapping. It can be one of the following: Creating , Enabling , Enabled , Disabling , Disabled , Updating , or Deleting .
-    # running_states = ["Enabling", "Enabled", "Disabled", "Disabling"]
     disabled_states = ["Disabled", "Disabling"]
     enabled_states = ["Enabling", "Enabled"]
     
