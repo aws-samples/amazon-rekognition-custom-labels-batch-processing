@@ -83,7 +83,7 @@ The demo application is deployed as an [AWS CloudFormation](https://aws.amazon.c
 #### Accessing the Application
 
 After deployment, the application can be used by configuring the following services.
-1. The event that triggers the Step Machine is defaulted to run every 2 hours and is set to "Enabled" at the start. This event can be modified and set to "Disabled" if the use case does not need to trigger the step machine automatically. The default 2 hours run schedule can also be modified as per use case. When modifying the run schedule, a key point to bear in mind will be to check the pricing for Amazon Rekognition Custom Labels - which is currently priced per hour. The step machine is configured to shut down the model after 1 hour by default.
+1. The event that triggers the Step Machine is defaulted to run every 2 hours and is set to "Enabled" at the start. This event can be modified and set to "Disabled" if the use case does not need to trigger the step machine automatically. The default 2 hours run schedule can also be modified as per use case. When modifying the run schedule, a key point to bear in mind will be to check the pricing for Amazon Rekognition Custom Labels - which is currently priced per hour. The machine will continue to execute until all the images in the source bucket have been processed.
 2. The Source S3 bucket should be used as the destination bucket for all the images to be used for inferencing. As the images get processed, they will be deleted from the source bucket.
 3. The Final S3 bucket holds the images that have been processed along with the inferenced custom label jsons.
 
