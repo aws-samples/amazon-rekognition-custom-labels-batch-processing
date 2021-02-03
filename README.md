@@ -1,10 +1,12 @@
-# Serverless computer vision label detection 
+# Batch Image Processing with Amazon Rekognition Custom Labels 
 
-The ability to apply custom inferencing in images is a use case that is of advantage in many domains. This ability can help us use computer vision to identify the objects and scenes that are specific to a business need. For example, you can find your logo in social media posts, identify your products on store shelves, classify machine parts in an assembly line, distinguish healthy and infected plants etc. The computer vision capability is often built with deep learning models. It automates extraction, analysis, classification and understanding of useful information from a single image or a sequence of images. The image data can take many forms, however for this example solution we will focus on png and jpg/ jpeg images only.
+Amazon Rekognition is a computer vision service that makes it easy to add image and video analysis to your applications using proven, highly scalable, deep learning technology that requires no machine expertise to use. With Amazon Rekognition, you can identify objects, people, text, scenes, and activities in images and videos, as well as detect any inappropriate content. Amazon Rekognition also provides highly accurate facial analysis and facial search capabilities that you can use to detect, analyze, and compare faces for a wide variety of use cases.
 
-In this project, we will reference Amazon Rekognition or Amazon Lookout for Vision to use for a computer vision inferencing capability.  To use it with either service, customers need to create a project, upload a few images and train a model to recognise their custom labels in the provided images. To use custom inferencing, instead of thousands of images, you can upload a small set of training images (typically a few hundred images or less) that are specific to your use case. You can do this by using the easy-to-use console. If your images are already labeled, the Amazon computer vision service (Amazon Rekognition or Amazon Lookout for Vision) can begin training a model in a short time. Once trained, the model can be started to use it for inferencing. It it recommended to stop the model after use to optimise on cost incurred while the model is running.
+Amazon Rekognition Custom Labels allows you to identify the objects and scenes in images that are specific to your business needs. For example, you can find your logo in social media posts, identify your products on store shelves, classify machine parts in an assembly line, distinguish healthy and infected plants etc. Amazon Rekognition Custom Labels provides a very simple end-to-end experience where you start by labeling a dataset. Custom Labels then build a custom machine learning model for you by inspecting the data and selecting the right machine learning algorithm. Once your model is trained you can start using your model immediately for image analysis. If you expect to process images in batches (e.g. once a day or week, or at scheduled times during the day), you can provision your custom model at scheduled times.
 
-This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI or using the Cloudformation links below. The application can be used for Computer Vision inferencing using Amazon Rekognition or Amazon Lookout for Vision. It includes the following files and folders:
+In this post, we show how you can build cost-optimal batch solution with Amazon Rekognition Custom Labels which provision your custom model at scheduled times, process all your images, and then deprovision your resources to avoid incurring extra cost.
+
+This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI or using the Cloudformation links below. It includes the following files and folders:
 
 - \functions - Code for the application's Lambda functions to check the presence of messages in a Queue, start or stop a Amazon Rekognition Custom Label Model, Analyse Images using a Custom Label Model.
 - template.yaml - A template that defines the application's AWS resources.
@@ -12,9 +14,15 @@ This project contains source code and supporting files for a serverless applicat
 This application creates a serverless Amazon Rekognition Custom Label Detection workflow which runs on a pre-defined schedule (note that the schedule is enabled by default at deployment). It demonstrates the power of Step Functions to orchestrate Lambda functions and other AWS resources to form complex and robust workflows, coupled with event-driven development using Amazon EventBridge.
 
 Solution Architecture Diagram:
-<img width="814" alt="Architecture Diagram" src="docs/Solution%20Architecture%20-%20Serverless%20Computer%20Vision%20Label%20Detection.png">
+The following architecture diagram shows how you can design a serverless workflow to process images in batches with Amazon Rekognition Custom Labels.
 
-This application can also be used for creating a serverless image label inferencing pipeline for Amazon Lookout for Vision.
+<img width="814" alt="Architecture Diagram" src="docs/SA-Amazon Rekognition Custom Labels Batch Image Processing.png">
+
+1. As an image is stored in Amazon S3 bucket, it triggers a message which gets stored in an Amazon SQS queue.
+2. Amazon EventBridge is configured to trigger an AWS Step Function workflow at certain frequency (1 hour by default).
+3. As the workflow runs it checks the number of items in the Amazon SQS queue. If there are no items to process in the queue, workflow ends. If there are items to process in the queue, workflow starts the Amazon Rekognition Custom Labels model and enables Amazon SQS integration with a Lambda function to process those images.
+4. As integration between Amazon SQS queue and Lambda is enabled, Lambda start processing images using Amazon Rekognition Custom Labels.
+5. Once all the images are processed, workflow stops the Amazon Rekognition Custom Labels model and disables integration between Amazon SQS queue and Lambda function.
 
 The application uses several AWS resources, including Amazon Simple Storage Service, Amazon Simple Queue Service, Step Functions state machines, Lambda functions and an EventBridge rule trigger. These resources are defined in the `template.yaml` file in this project. You can update the template to add AWS resources through the same deployment process that updates your application code.
 
@@ -80,12 +88,13 @@ The demo application is deployed as an [AWS CloudFormation](https://aws.amazon.c
    - You can monitor the stack creation progress in the "Events" tab.
 10. Note the _url_ displayed in the _Outputs_ tab for the stack. This is used to access the application.
 
-#### Accessing the Application
+#### Testing the workflow
 
-After deployment, the application can be used by configuring the following services.
-1. The event that triggers the Step Machine is defaulted to run every 2 hours and is set to "Enabled" at the start. This event can be modified and set to "Disabled" if the use case does not need to trigger the step machine automatically. The default 2 hours run schedule can also be modified as per use case. When modifying the run schedule, a key point to bear in mind will be to check the pricing for Amazon Rekognition Custom Labels - which is currently priced per hour. The machine will continue to execute until all the images in the source bucket have been processed.
-2. The Source S3 bucket should be used as the destination bucket for all the images to be used for inferencing. As the images get processed, they will be deleted from the source bucket.
-3. The Final S3 bucket holds the images that have been processed along with the inferenced custom label jsons.
+To test your workflow, complete the following steps:
+1. Upload sample images to the input S3 bucket that was created by the solution (Example: xxxx-sources3bucket-xxxx).
+2. Go to AWS Step Function console and select the state machine created by the solution (Example: CustomCVStateMachine-xxxx). You will see an execution triggered by the EventBridge at every hour.
+3. To test the solution, you can also manually start the workflow by clicking on the “Start execution” button.
+4. As images are processed you can go to the output S3 bucket (Example: xxxx-finals3bucket-xxxx) to see the JSON output for each image. The Final S3 bucket holds the images that have been processed along with the inferenced custom label json. As the images get processed, they will be deleted from the source bucket.
 
 
 ### Removing the application

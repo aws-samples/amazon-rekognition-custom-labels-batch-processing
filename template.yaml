@@ -12,7 +12,7 @@ Parameters:
 Mappings:
   Solution:
     Constants:
-      Version: "v0.8"
+      Version: "v0.9"
 
 Resources:
   SourceS3Bucket:
@@ -105,7 +105,7 @@ Resources:
             Default: Wait for the model to start
           Wait for the model to start:
             Type: Wait
-            Seconds: 600
+            Seconds: 900
             Next: Start Model
           Keep Model running for 1 hr:
             Type: Wait
@@ -153,9 +153,9 @@ Resources:
         HourlyPollingSchedule:
           Type: Schedule # More info about Schedule Event Source: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-statemachine-schedule.html
           Properties:
-            Description: Schedule to run the state machine every 2 hour
+            Description: Schedule to run the state machine every 1 hour
             Enabled: True # This schedule can be disabled based on the use case to avoid incurring charges.
-            Schedule: "rate(2 hours)"
+            Schedule: "rate(1 hours)"
       Policies: # Find out more about SAM policy templates: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-templates.html
         - LambdaInvokePolicy:
             FunctionName: !Ref SQSPollerFunction
