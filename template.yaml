@@ -12,7 +12,7 @@ Parameters:
 Mappings:
   Solution:
     Constants:
-      Version: "v0.10"
+      Version: "v0.11"
 
 Resources:
   SourceS3Bucket:
@@ -155,7 +155,7 @@ Resources:
           Properties:
             Description: Schedule to run the state machine every 1 hour
             Enabled: True # This schedule can be disabled based on the use case to avoid incurring charges.
-            Schedule: "rate(1 hours)"
+            Schedule: "rate(1 hour)"
       Policies: # Find out more about SAM policy templates: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-templates.html
         - LambdaInvokePolicy:
             FunctionName: !Ref SQSPollerFunction
