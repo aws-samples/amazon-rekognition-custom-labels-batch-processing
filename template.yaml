@@ -12,7 +12,7 @@ Parameters:
 Mappings:
   Solution:
     Constants:
-      Version: "v0.12"
+      Version: "v0.13"
 
 Resources:
   SourceS3Bucket:
