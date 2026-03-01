@@ -1,2 +1,2 @@
-awscli==1.16.292
+awscli==1.44.38
 cfn-flip==1.2.3
